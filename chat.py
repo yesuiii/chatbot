@@ -42,11 +42,17 @@ def get_relevant_answer(question):
     question = question.lower()
 
     if "admission" in question or "apply" in question:
-        admission_info = aum_data.get('admission', 'No specific admission details found.')
-        return (
-            f"Thank you for your interest in applying to AUM. Here's the information about the admission process:\n\n"
-            f"{admission_info}\n\n"
-            f"For more information, please visit the [Admission Page](https://aum.edu.mn/en/admission/)."
+         return (
+            f"Thank you for your interest in applying to AUM! Here is the information about the admission process and deadlines:\\n\\n"
+            f"**Application Deadlines:**\\n"
+            f"- Early Admission: until May 31, 2025\\n"
+            f"- General Admission: until June 31, 2025\\n"
+            f"- Late Admission: until August 23, 2025\\n"
+            f"- Spring Admission: until January 1, 2026\\n\\n"
+            f"*International students, please refer to the [International Students Page](https://aum.edu.mn/en/international-students/) for specific details.*\\n\\n"
+            f"**Steps to Attend AUM:**\\n"
+            f"All steps of the enrollment process are completed on the new student application portal.\\n\\n"
+            f"For more detailed information and to start your application, please visit the [Admission Page](https://aum.edu.mn/en/admission/)."
         )
     
     elif "academic" in question or "program" in question or "major" in question:
@@ -55,6 +61,14 @@ def get_relevant_answer(question):
             f"At AUM, we offer a range of academic programs designed to provide a well-rounded education. Here's some information about our academics:\n\n"
             f"{academics_info}\n\n"
             f"To explore all available programs, please visit our [Academics Page](https://aum.edu.mn/en/academics/)."
+        )
+    
+    elif "data science" in question and not "masters" in question: 
+        ds_info = aum_data.get('data_science', 'No specific details found for the Data Science program.')
+        return (
+            f"AUM offers an undergraduate program in Data Science. Here's some information:\\n\\n"
+            f"{ds_info}\\n\\n"
+            f"For more details, please visit the [Data Science Program Page](https://aum.edu.mn/en/data-science/). You can explore all programs on our [Academics Page](https://aum.edu.mn/en/academics/)."
         )
     
     elif "why aum" in question or "choose aum" in question:
@@ -89,6 +103,22 @@ def get_relevant_answer(question):
             f"To explore graduate programs further, please visit our [Graduate Degrees Page](https://aum.edu.mn/en/graduate-degrees/)."
         )
     
+    elif "masters in data science" in question or "msds" in question:
+        msds_info = aum_data.get('masters_in_data_science', 'No specific details found for the Masters in Data Science program.')
+        return (
+            f"Interested in the Masters in Data Science program? Here's some information:\\n\\n"
+            f"{msds_info}\\n\\n"
+            f"For more details, please visit the [Masters in Data Science Page](https://aum.edu.mn/en/masters-in-data-science/)."
+        )
+
+    elif "mba" in question or "master of business administration" in question:
+        mba_info = aum_data.get('mba', 'No specific details found for the MBA program.')
+        return (
+            f"Interested in the MBA program? Here's some information:\\n\\n"
+            f"{mba_info}\\n\\n"
+            f"For more details, please visit the [MBA Page](https://aum.edu.mn/en/mba/)."
+        )
+
     elif "study abroad" in question:
         study_abroad_info = aum_data.get('study_abroad', 'No specific study abroad details found.')
         return (
@@ -104,6 +134,41 @@ def get_relevant_answer(question):
             f"{faculty_info}\n\n"
             f"To learn more about our faculty, please visit our [Faculty Page](https://aum.edu.mn/en/faculty/)."
         )
+    elif "extracurricular activities" in question or "clubs" in question or "student life" in question:
+        return (
+            f"AUM offers various extracurricular activities to enrich student life, fostering community, leadership, and personal growth alongside academics.\\n\\n"
+            f"You can find details about specific clubs, events, and activities on the Extracurricular Activities Page.\\n"
+            f"Please note: The content on the page itself might be in Mongolian. You may need to use your browser's translation feature.\\n\\n"
+            f"Visit the [Extracurricular Activities Page](https://aum.edu.mn/en/extracurricular-activities/) for more details."
+        )
+    
+    elif "study in usa" in question or "study in the usa" in question:
+        study_usa_info = aum_data.get('study_in_usa', 'No specific details found about studying in the USA through AUM.')
+        return (
+            f"Interested in studying in the USA through AUM? Here's some information:\\n\\n"
+            f"{study_usa_info}\\n\\n"
+            f"For more details, please visit the [Study in USA Page](https://aum.edu.mn/en/study-in-usa/)."
+        )
+
+    elif "scholarship" in question or "financial aid" in question:
+        return (
+            f"Yes, AUM offers scholarship opportunities!\\n\\n"
+            f"Applying for a scholarship is an optional step in the admission process. You can find more details about eligibility criteria and the application procedure on the admission portal or by contacting the admission office.\\n\\n"
+            f"For more information, please visit the [Admission Page](https://aum.edu.mn/en/admission/) or inquire with the admission office directly."
+        )
+
+    elif "tuition" in question or "fee" in question or "cost" in question:
+        return (
+            "For detailed information about tuition fees and payment options, please contact the AUM administration directly. "
+            "You can reach them via email at info@aum.edu.mn or by phone at 7272-2626. "
+            "They will provide you with the most up-to-date information."
+        )
+
+    elif "location" in question or "address" in question or "map" in question or "where" in question:
+        return (
+            "The American University of Mongolia is located in Ider Tower, 2nd floor, Sukhbaatar District, Ulaanbaatar, Mongolia. \n\n"
+            "You can find us on Google Maps here: [AUM Location Map](https://maps.app.goo.gl/tXEHPaFoexDVtDNJ7)"
+        )
 
     else:
         return (
@@ -112,10 +177,8 @@ def get_relevant_answer(question):
             "I'm here to help!"
         )
 
-
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-
 
     response = get_relevant_answer(user_input)
     response = clean_answer(response)
