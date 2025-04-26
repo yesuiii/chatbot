@@ -1,46 +1,25 @@
 import streamlit as st
 import pickle
+import re
 
 # Load the scraped AUM data
 with open("aum_data.pkl", "rb") as f:
     aum_data = pickle.load(f)
 
-# AUM page links
-pages = {
-    'home': 'https://aum.edu.mn/',
-    'academics': 'https://aum.edu.mn/en/academics/',
-    'why_aum': 'https://aum.edu.mn/en/why-aum/',
-    'admission': 'https://aum.edu.mn/en/admission/',
-    'international_students': 'https://aum.edu.mn/en/international-students/',
-    'study_abroad': 'https://aum.edu.mn/en/study-abroad/',
-    'enrollment_exam': 'https://aum.edu.mn/en/enrollment-exam/',
-    'graduate_degrees': 'https://aum.edu.mn/en/graduate-degrees/',
-    'study_in_usa': 'https://aum.edu.mn/en/study-in-usa/',
-    'extraccuricular_activities': 'https://aum.edu.mn/en/extraccurricular-activities/',
-    'faculty': 'https://aum.edu.mn/en/faculty/',
-    'data_science': 'https://aum.edu.mn/data-science/',
-    'masters_in_data_science': 'https://aum.edu.mn/en/masters-in-data-science/',
-    'mba': 'https://aum.edu.mn/en/mba/'
-}
 
-# Set up the page title and chatbot
 st.set_page_config(page_title="AUM Chatbot", page_icon="🎓")
 st.title("🎓 American University of Mongolia Chatbot")
 st.write("Hello! I'm here to help with any questions you have about AUM. Please ask away.")
 
-# Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Show previous chat messages
+
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Get user input (chat input box)
 user_input = st.chat_input("How can I assist you today?")
-
-import re
 
 unwanted_phrases = [
     "info@aum.edu.mn", "Instagram", "Facebook", "© American University of Mongolia",
@@ -49,21 +28,18 @@ unwanted_phrases = [
     "International students", "Study Abroad", "Enrollment Exam", "Graduate Degrees",
     "Masters in Data Science", "MBA", "Submit new student application", "Reserve your seat by submitting reservation fee",
     "Complete student interview", "Sign new student contract and submit documents",
-    "(OPTIONAL) Submit scholarship application"
+    "(OPTIONAL) Submit scholarship application",
+    "/Masters in → -> Masters in → "
 ]
-
 
 def clean_answer(answer):
     for phrase in unwanted_phrases:
         answer = answer.replace(phrase, "")
-    # Optionally remove extra spaces after the cleaning process
     answer = re.sub(r'\s+', ' ', answer).strip()
     return answer
 
 def get_relevant_answer(question):
     question = question.lower()
-
-    # Define keywords to match question categories and provide detailed, polite responses
 
     if "admission" in question or "apply" in question:
         admission_info = aum_data.get('admission', 'No specific admission details found.')
@@ -86,7 +62,7 @@ def get_relevant_answer(question):
         return (
             f"We are delighted you're considering AUM! Here's why AUM stands out:\n\n"
             f"{why_aum_info}\n\n"
-            f"Learn more about why AUM is a great choice by visiting our [Why AUM Page](https://aum.edu.mn/en/why-aum/)."
+            f"Learn more by visiting our [Why AUM Page](https://aum.edu.mn/en/why-aum/)."
         )
     
     elif "international students" in question:
@@ -129,9 +105,6 @@ def get_relevant_answer(question):
             f"To learn more about our faculty, please visit our [Faculty Page](https://aum.edu.mn/en/faculty/)."
         )
 
-    # Additional pages and sections can be added as needed
-
-    # Default response if no match is found
     else:
         return (
             "I'm sorry, I wasn't able to find an answer to that specific question. "
@@ -139,17 +112,15 @@ def get_relevant_answer(question):
             "I'm here to help!"
         )
 
-# Process user input and generate response
+
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
 
-    # Call function to get the relevant answer
-    response = get_relevant_answer(user_input)
 
-    # Add bot's response to chat history
+    response = get_relevant_answer(user_input)
+    response = clean_answer(response)
+
     st.session_state.messages.append({"role": "assistant", "content": response})
 
-    # Display the bot's response in the chat
     with st.chat_message("assistant"):
         st.markdown(response)
-
